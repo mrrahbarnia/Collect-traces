@@ -14,7 +14,7 @@ class Metric(Base):
     )
     memory_usage: so.Mapped[types.MemoryUsage]
     cpu_usage: so.Mapped[types.CpuUsage]
-    disk_spaca_total: so.Mapped[types.DiskSpaceTotal]
+    disk_space_total: so.Mapped[types.DiskSpaceTotal]
     disk_space_used: so.Mapped[types.DiskSpaceUsed]
     disk_usage: so.Mapped[types.DiskUsage]
     created_at: so.Mapped[datetime] = so.mapped_column(

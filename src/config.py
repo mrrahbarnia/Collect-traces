@@ -51,4 +51,8 @@ class LogConfig(BaseModel):
 
 
 app_configs: dict[str, Any] = {"title": "Collect-Metrics"}
-app_configs["root_path"] = f"{settings.APP_VERSION}"
+if settings.ENVIRONMENT.is_deploy:
+    app_configs["root_path"] = f"{settings.APP_VERSION}"
+
+if not settings.ENVIRONMENT.is_debug:
+    app_configs["openapi_url"] = None

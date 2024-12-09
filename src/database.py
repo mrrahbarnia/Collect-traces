@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, INTEGER, FLOAT
+from sqlalchemy import MetaData, INTEGER, FLOAT, BIGINT
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -18,8 +18,8 @@ class Base(DeclarativeBase, MappedAsDataclass):
         types.MetricId: INTEGER,
         types.MemoryUsage: FLOAT,
         types.CpuUsage: FLOAT,
-        types.DiskSpaceTotal: INTEGER,
-        types.DiskSpaceUsed: INTEGER,
+        types.DiskSpaceTotal: BIGINT,
+        types.DiskSpaceUsed: BIGINT,
         types.DiskUsage: FLOAT
     }
 
