@@ -1,5 +1,6 @@
 from enum import Enum
 
+# ======================== Some db conventions ======================== #
 DB_NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
     "uq": "uq_%(table_name)s_%(column_0_name)s",

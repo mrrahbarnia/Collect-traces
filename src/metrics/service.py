@@ -20,6 +20,9 @@ class MetricService:
         pass
 
     async def current_metrics(self) -> MetricsNamedTuple:
+        """
+        Collection of the system status at the present moment.
+        """
         cpu_usage = await asyncio.to_thread(psutil.cpu_percent, interval=1)
         memory_info = await asyncio.to_thread(psutil.virtual_memory)
         disk_space = await asyncio.to_thread(psutil.disk_usage, "/")
@@ -36,6 +39,9 @@ class MetricService:
             db_session: async_sessionmaker[AsyncSession],
             metrics: MetricsNamedTuple
     ) -> None:
+        """
+        Storing all metrics in db for analyzing purpose.
+        """
         smtm = sa.insert(Metric).values(
             {
                 Metric.memory_usage: metrics.memory_usage,
@@ -55,6 +61,9 @@ class MetricService:
             self,
             db_session: async_sessionmaker[AsyncSession],
     ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        """
+        Analyzing memory usage per minutes interval.
+        """
         smtm = (
             sa.select(
                 sa.func.date_trunc('minute', Metric.created_at).label("minute_interval"),
@@ -76,6 +85,9 @@ class MetricService:
             self,
             db_session: async_sessionmaker[AsyncSession],
     ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        """
+        Analyzing memory usage per hours interval.
+        """
         smtm = (
             sa.select(
                 sa.func.date_trunc('hour', Metric.created_at).label("hour_interval"),
@@ -97,6 +109,9 @@ class MetricService:
             self,
             db_session: async_sessionmaker[AsyncSession],
     ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        """
+        Analyzing cpu usage per minutes interval.
+        """
         smtm = (
             sa.select(
                 sa.func.date_trunc('minute', Metric.created_at).label("minute_interval"),
@@ -118,6 +133,9 @@ class MetricService:
             self,
             db_session: async_sessionmaker[AsyncSession],
     ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        """
+        Analyzing cpu usage per hours interval.
+        """
         smtm = (
             sa.select(
                 sa.func.date_trunc('hour', Metric.created_at).label("hour_interval"),
@@ -139,6 +157,9 @@ class MetricService:
             self,
             db_session: async_sessionmaker[AsyncSession],
     ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        """
+        Analyzing disk usage per minutes interval.
+        """
         smtm = (
             sa.select(
                 sa.func.date_trunc('minute', Metric.created_at).label("minute_interval"),
@@ -160,6 +181,9 @@ class MetricService:
             self,
             db_session: async_sessionmaker[AsyncSession],
     ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        """
+        Analyzing disk usage per hour interval.
+        """
         smtm = (
             sa.select(
                 sa.func.date_trunc('hour', Metric.created_at).label("hour_interval"),

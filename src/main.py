@@ -15,6 +15,10 @@ logger = logging.getLogger("root")
 
 @asynccontextmanager
 async def lifespan(_application: FastAPI) -> AsyncGenerator:
+    """
+    Lifespan for adding some configs including 
+    logger and schedular at the starting point.
+    """
     dictConfig(LogConfig().model_dump())
     logger.info("App is running...")
     task = asyncio.create_task(clock_app.serve())
@@ -29,6 +33,7 @@ async def lifespan(_application: FastAPI) -> AsyncGenerator:
 
 app = FastAPI(**app_configs, lifespan=lifespan)
 
+# ======================== Loading other routers ======================== #
 app.include_router(router=metrics_router.current_router, tags=["metrics"])
 app.include_router(router=metrics_router.memory_router, tags=["memory"])
 app.include_router(router=metrics_router.cpu_router, tags=["cpu"])

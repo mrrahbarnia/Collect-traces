@@ -1,3 +1,6 @@
+"""
+Serializing data with awesome pydantic :)
+"""
 from pydantic import BaseModel, Field, field_validator
 from typing import Annotated
 from datetime import datetime, time

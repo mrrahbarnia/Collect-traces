@@ -16,6 +16,9 @@ logger = logging.getLogger("metrics")
 
 @asynccontextmanager
 async def aioclock_lifespan(aio_clock: AioClock) -> AsyncGenerator[AioClock, None]:
+    """
+    Schedular lifespan for working in background.
+    """
     logger.info("Starting aioclock app...")
     yield aio_clock
     logger.info("Closing aioclock app...")
@@ -27,6 +30,12 @@ clock_app = AioClock(lifespan=aioclock_lifespan)
 async def collect_metrics(
     db_session: Annotated[async_sessionmaker[AsyncSession], Depends(db_session)],
 ) -> None:
+    """
+    Schedular for collecting metrics every 20 seconds,and store
+    them in db. The maintainer can replace metric_config variables
+    with his favorite maximum percentage to alerting admin user
+    whenever system resources exceeds those.
+    """
     metrics: MetricsNamedTuple = await MetricService().current_metrics()
     if metrics.cpu_usage > metric_config.MAX_CPU_PERCENT_ALERT:
         send_email(f"Cpu usage exceeds {metric_config.MAX_CPU_PERCENT_ALERT}%!")

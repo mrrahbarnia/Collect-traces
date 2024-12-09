@@ -15,6 +15,9 @@ class CustomBaseSettings(BaseSettings):
 
 
 class Config(CustomBaseSettings):
+    """
+    Loading environment variables from .env file
+    """
     POSTGRES_URL: PostgresDsn
     ENVIRONMENT: Environment = Environment.PRODUCTION
     APP_VERSION: str = "0.1"
