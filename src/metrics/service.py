@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from src.metrics.models import Metric
 from src.metrics.types import MetricsNamedTuple
 from src.metrics.types import MetricId
+from src.metrics.utils import send_email
 
 logger = logging.getLogger("metrics")
 
@@ -46,4 +47,4 @@ class MetricService:
             metric_id: MetricId | None = await conn.scalar(smtm)
             if not metric_id:
                 logger.warning("Check db connection...")
-                # TODO: Alert someone
+                send_email(content="Check db connection...")
