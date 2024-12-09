@@ -3,12 +3,14 @@ import psutil # type: ignore
 import asyncio
 import sqlalchemy as sa
 
+from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from src.metrics.models import Metric
 from src.metrics.types import MetricsNamedTuple
 from src.metrics.types import MetricId
 from src.metrics.utils import send_email
+from src.metrics.exceptions import DbConnException
 
 logger = logging.getLogger("metrics")
 
@@ -48,3 +50,129 @@ class MetricService:
             if not metric_id:
                 logger.warning("Check db connection...")
                 send_email(content="Check db connection...")
+    
+    async def memory_usage_per_minute(
+            self,
+            db_session: async_sessionmaker[AsyncSession],
+    ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        smtm = (
+            sa.select(
+                sa.func.date_trunc('minute', Metric.created_at).label("minute_interval"),
+                sa.func.round(sa.cast(sa.func.avg(Metric.memory_usage), sa.Numeric), 2).label("memory_usage")
+            )
+            .select_from(Metric)
+            .group_by(sa.text("1"))
+            .order_by(sa.desc(sa.text("1")))
+            .limit(10)
+        )
+        try:
+            async with db_session.begin() as conn:
+                return (await conn.execute(smtm)).all()
+        except Exception as ex:
+            logger.warning(ex)
+            raise DbConnException
+    
+    async def memory_usage_per_hour(
+            self,
+            db_session: async_sessionmaker[AsyncSession],
+    ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        smtm = (
+            sa.select(
+                sa.func.date_trunc('hour', Metric.created_at).label("hour_interval"),
+                sa.func.round(sa.cast(sa.func.avg(Metric.memory_usage), sa.Numeric), 2).label("memory_usage")
+            )
+            .select_from(Metric)
+            .group_by(sa.text("1"))
+            .order_by(sa.desc(sa.text("1")))
+            .limit(10)
+        )
+        try:
+            async with db_session.begin() as conn:
+                return (await conn.execute(smtm)).all()
+        except Exception as ex:
+            logger.warning(ex)
+            raise DbConnException
+
+    async def cpu_usage_per_minute(
+            self,
+            db_session: async_sessionmaker[AsyncSession],
+    ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        smtm = (
+            sa.select(
+                sa.func.date_trunc('minute', Metric.created_at).label("minute_interval"),
+                sa.func.round(sa.cast(sa.func.avg(Metric.cpu_usage), sa.Numeric), 2).label("cpu_usage")
+            )
+            .select_from(Metric)
+            .group_by(sa.text("1"))
+            .order_by(sa.desc(sa.text("1")))
+            .limit(10)
+        )
+        try:
+            async with db_session.begin() as conn:
+                return (await conn.execute(smtm)).all()
+        except Exception as ex:
+            logger.warning(ex)
+            raise DbConnException
+    
+    async def cpu_usage_per_hour(
+            self,
+            db_session: async_sessionmaker[AsyncSession],
+    ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        smtm = (
+            sa.select(
+                sa.func.date_trunc('hour', Metric.created_at).label("hour_interval"),
+                sa.func.round(sa.cast(sa.func.avg(Metric.cpu_usage), sa.Numeric), 2).label("cpu_usage")
+            )
+            .select_from(Metric)
+            .group_by(sa.text("1"))
+            .order_by(sa.desc(sa.text("1")))
+            .limit(10)
+        )
+        try:
+            async with db_session.begin() as conn:
+                return (await conn.execute(smtm)).all()
+        except Exception as ex:
+            logger.warning(ex)
+            raise DbConnException
+    
+    async def disk_usage_per_minute(
+            self,
+            db_session: async_sessionmaker[AsyncSession],
+    ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        smtm = (
+            sa.select(
+                sa.func.date_trunc('minute', Metric.created_at).label("minute_interval"),
+                sa.func.round(sa.cast(sa.func.avg(Metric.disk_usage), sa.Numeric), 2).label("disk_usage")
+            )
+            .select_from(Metric)
+            .group_by(sa.text("1"))
+            .order_by(sa.desc(sa.text("1")))
+            .limit(10)
+        )
+        try:
+            async with db_session.begin() as conn:
+                return (await conn.execute(smtm)).all()
+        except Exception as ex:
+            logger.warning(ex)
+            raise DbConnException
+    
+    async def disk_usage_per_hour(
+            self,
+            db_session: async_sessionmaker[AsyncSession],
+    ) -> sa.Sequence[sa.Row[tuple[Any, Any]]]:
+        smtm = (
+            sa.select(
+                sa.func.date_trunc('hour', Metric.created_at).label("hour_interval"),
+                sa.func.round(sa.cast(sa.func.avg(Metric.disk_usage), sa.Numeric), 2).label("disk_usage")
+            )
+            .select_from(Metric)
+            .group_by(sa.text("1"))
+            .order_by(sa.desc(sa.text("1")))
+            .limit(10)
+        )
+        try:
+            async with db_session.begin() as conn:
+                return (await conn.execute(smtm)).all()
+        except Exception as ex:
+            logger.warning(ex)
+            raise DbConnException

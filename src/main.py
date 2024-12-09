@@ -29,4 +29,7 @@ async def lifespan(_application: FastAPI) -> AsyncGenerator:
 
 app = FastAPI(**app_configs, lifespan=lifespan)
 
-app.include_router(router=metrics_router.router, prefix="/metrics", tags=["metrics"])
+app.include_router(router=metrics_router.current_router, tags=["metrics"])
+app.include_router(router=metrics_router.memory_router, tags=["memory"])
+app.include_router(router=metrics_router.cpu_router, tags=["cpu"])
+app.include_router(router=metrics_router.disk_router, tags=["disk"])

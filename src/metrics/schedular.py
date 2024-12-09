@@ -23,7 +23,7 @@ async def aioclock_lifespan(aio_clock: AioClock) -> AsyncGenerator[AioClock, Non
 clock_app = AioClock(lifespan=aioclock_lifespan)
 
 
-@clock_app.task(trigger=Every(seconds=10))
+@clock_app.task(trigger=Every(seconds=20))
 async def collect_metrics(
     db_session: Annotated[async_sessionmaker[AsyncSession], Depends(db_session)],
 ) -> None:
